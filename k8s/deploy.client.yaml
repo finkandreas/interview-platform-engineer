@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-client
+  namespace: namespace-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web-client
+  template:
+    metadata:
+      labels:
+        app: web-client
+    spec:
+      containers:
+      - name: web-client
+        image: "registry.cscs.ch/web-client:dev"
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000
+        volumeMounts:
+        - name: logs-endpoint
+          mountPath: /var/log
+        - name: client-config
+          mountPath: /app/config.py
+          subPath: config.py
+          readOnly: True
+        startupProbe:
+          tcpSocket:
+             port: 5000
+          initialDelaySeconds: 5
+          failureThreshold: 1
+      volumes:
+      - emptyDir: {}
+        name: logs-endpoint
+      - name: client-config
+        configMap:
+          name: client-config-configmap   

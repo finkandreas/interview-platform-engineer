@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: client-config-configmap
+  namespace: namespace-dev
+data:
+  config.py: |
+    class Config:
+      '''Base configuration class for the app'''
+      
+    class DevConfig(Config):
+      '''Class for development configuration'''
+      DEBUG = True
+      TESTING = True
+      APP_NAME = web-client
+      
